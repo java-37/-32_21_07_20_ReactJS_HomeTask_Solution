@@ -1,26 +1,44 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import Header from './components/Header';
+import TodoRow from './components/TodoRow';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+export default class App extends React.Component {
+  state = {
+    todo:[]
+  }
+
+  addTodo = todo => {
+    this.setState({...this.state,todo:[...this.state.todo,{title:todo,done:false}]});
+  }
+
+  removeTodo = index => {
+    const arr = [...this.state.todo];
+    arr.splice(index,1);
+    this.setState({...this.state,todo:[...arr]});
+  }
+
+  changeTodoStatus = (index, status) => {
+    const arr = [...this.state.todo];
+    arr[index] = {...this.state.todo[index],done:status};
+    this.setState({...this.state,todo:[...arr]});
+  }
+
+  render(){
+    return (
+      <div>
+        <Header addToDo={this.addTodo}/>
+        <hr/>
+        <ul>
+          {this.state.todo.map((todo,i) => <li key={i}>
+            <TodoRow 
+            onDoneChangeHandler={this.changeTodoStatus} 
+            onRemoveHandler={this.removeTodo} 
+            index={i} 
+            todo={todo}/>
+            </li>)}
+        </ul>
+      </div>
+    )
+  }
 }
-
-export default App;
